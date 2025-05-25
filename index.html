@@ -2,25 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Morse Code Converter</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- start project -->
-  <input class="text" id="text" type="text" placeholder="Enter text here...">
-  <div class="button-group">
-    <button class="convert" id="convert">&downarrow; Convert &downarrow;</button>
-    <button class="convert" id="decode">&uparrow; Decode &uparrow;</button>
-    <button class="copy" id="copy">Copy</button>
-    <button class="reset" id="reset">&circlearrowleft;</button>
-  </div>
-  <div class="code" id="code" type="text"></div>
-  <!-- end project -->
+  <main class="container">
+    <h1>Morse Code Converter</h1>
+    <div class="converter-box">
+      <label for="text-input" class="sr-only">Enter text to convert</label>
+      <input id="text-input" class="text-input" type="text" placeholder="Enter text here..." aria-label="Input text">
+      
+      <div class="button-group">
+        <button id="convert-btn" class="btn convert-btn" aria-label="Convert to Morse code">
+          <span class="icon">↓</span> Convert <span class="icon">↓</span>
+        </button>
+        <button id="reset-btn" class="btn reset-btn" aria-label="Reset converter">
+          <span class="icon">↻</span>
+        </button>
+      </div>
+      
+      <label for="code-output" class="sr-only">Morse code output</label>
+      <div id="code-output" class="code-output" role="textbox" aria-readonly="true" aria-label="Morse code output"></div>
+    </div>
+  </main>
   <script src="script.js"></script>
 </body>
 </html>
