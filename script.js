@@ -1,61 +1,100 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // DOM Elements
-  const textInput = document.getElementById('text-input');
-  const convertBtn = document.getElementById('convert-btn');
-  const resetBtn = document.getElementById('reset-btn');
-  const codeOutput = document.getElementById('code-output');
+const convert = document.getElementById("convert");
+const decode = document.getElementById("decode");
+const copy = document.getElementById("copy");
+const reset = document.getElementById("reset");
+const text = document.getElementById("text");
+const code = document.getElementById("code");
 
-  // Morse Code Mapping
-  const morseCodeMap = {
-    "A": "•⁃", "B": "⁃•••", "C": "⁃•⁃•", "D": "⁃••", "E": "•", 
-    "F": "••⁃•", "G": "⁃⁃•", "H": "••••", "I": "••", "J": "•⁃⁃⁃", 
-    "K": "⁃•⁃", "L": "•⁃••", "M": "⁃⁃", "N": "⁃•", "O": "⁃⁃⁃", 
-    "P": "•⁃⁃•", "Q": "⁃⁃•⁃", "R": "•⁃•", "S": "•••", "T": "⁃", 
-    "U": "••⁃", "V": "•••⁃", "W": "•⁃⁃", "X": "⁃••⁃", "Y": "⁃•⁃⁃", 
-    "Z": "⁃⁃••", "1": "•⁃⁃⁃⁃", "2": "••⁃⁃⁃", "3": "•••⁃⁃", 
-    "4": "••••⁃", "5": "•••••", "6": "⁃••••", "7": "⁃⁃•••", 
-    "8": "⁃⁃⁃••", "9": "⁃⁃⁃⁃•", "0": "⁃⁃⁃⁃⁃", " ": "/"
-  };
+// Morse code mapping
+const charToMorse = {
+  "A": "•⁃", "B": "⁃•••", "C": "⁃•⁃•", "D": "⁃••", "E": "•", 
+  "F": "••⁃•", "G": "⁃⁃•", "H": "••••", "I": "••", "J": "•⁃⁃⁃", 
+  "K": "⁃•⁃", "L": "•⁃••", "M": "⁃⁃", "N": "⁃•", "O": "⁃⁃⁃", 
+  "P": "•⁃⁃•", "Q": "⁃⁃•⁃", "R": "•⁃•", "S": "•••", "T": "⁃", 
+  "U": "••⁃", "V": "•••⁃", "W": "•⁃⁃", "X": "⁃••⁃", "Y": "⁃•⁃⁃", 
+  "Z": "⁃⁃••", "1": "•⁃⁃⁃⁃", "2": "••⁃⁃⁃", "3": "•••⁃⁃", 
+  "4": "••••⁃", "5": "•••••", "6": "⁃••••", "7": "⁃⁃•••", 
+  "8": "⁃⁃⁃••", "9": "⁃⁃⁃⁃•", "0": "⁃⁃⁃⁃⁃", " ": "/"
+};
 
-  // Convert text to Morse code
-  const convertToMorse = (text) => {
-    return text.toUpperCase().split('').map(char => 
-      morseCodeMap[char] || char
-    ).join(' ');
-  };
+// Reverse mapping for decoding
+const morseToChar = Object.fromEntries(
+  Object.entries(charToMorse).map(([key, value]) => [value, key])
+);
 
-  // Update output and save to localStorage
-  const updateOutput = () => {
-    const text = textInput.value;
-    const morseCode = convertToMorse(text);
-    
-    codeOutput.textContent = morseCode;
-    localStorage.setItem('morseConverterText', text);
-    localStorage.setItem('morseConverterCode', morseCode);
-  };
+// Convert text to Morse code
+function textToMorse(inputText) {
+  return inputText.toUpperCase().split("").map(char => 
+    charToMorse[char] || char
+  ).join(" ");
+}
 
-  // Event Listeners
-  textInput.addEventListener('input', updateOutput);
+// Convert Morse code to text
+function morseToText(morseCode) {
+  return morseCode.split(" ").map(symbol => 
+    morseToChar[symbol] || symbol
+  ).join("");
+}
+
+// Update output and save to localStorage
+function updateOutput() {
+  const inputText = text.value;
+  const morseCode = textToMorse(inputText);
   
-  convertBtn.addEventListener('click', () => {
-    updateOutput();
-    textInput.focus();
-  });
+  code.innerText = morseCode;
+  localStorage.setItem("text", inputText);
+  localStorage.setItem("code", morseCode);
+}
+
+// Decode Morse code
+function decodeMorse() {
+  const morseCode = code.innerText;
+  const decodedText = morseToText(morseCode);
   
-  resetBtn.addEventListener('click', () => {
-    textInput.value = '';
-    codeOutput.textContent = '';
-    localStorage.removeItem('morseConverterText');
-    localStorage.removeItem('morseConverterCode');
-    textInput.focus();
-  });
+  text.value = decodedText;
+  localStorage.setItem("text", decodedText);
+}
 
-  // Initialize from localStorage
-  const initFromStorage = () => {
-    textInput.value = localStorage.getItem('morseConverterText') || '';
-    codeOutput.textContent = localStorage.getItem('morseConverterCode') || '';
-    textInput.focus();
-  };
+// Copy Morse code to clipboard
+function copyToClipboard() {
+  navigator.clipboard.writeText(code.innerText)
+    .then(() => {
+      copy.textContent = "Copied!";
+      setTimeout(() => {
+        copy.textContent = "Copy";
+      }, 2000);
+    })
+    .catch(err => {
+      console.error("Failed to copy: ", err);
+    });
+}
 
-  initFromStorage();
+// Event listeners
+text.addEventListener("input", updateOutput);
+
+convert.addEventListener("click", () => {
+  updateOutput();
+  text.focus();
+});
+
+decode.addEventListener("click", () => {
+  decodeMorse();
+  text.focus();
+});
+
+copy.addEventListener("click", copyToClipboard);
+
+reset.addEventListener("click", () => {
+  text.value = "";
+  code.innerText = "";
+  localStorage.removeItem("text");
+  localStorage.removeItem("code");
+  text.focus();
+});
+
+// Initialize from localStorage
+window.addEventListener("load", () => {
+  text.value = localStorage.getItem("text") || "";
+  code.innerText = localStorage.getItem("code") || "";
+  text.focus();
 });
